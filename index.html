@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Builder — 나만의 이력서</title>
+  <meta name="description" content="모듈로 이야기를 쓰고, 레이아웃에 배치하는 이력서 빌더">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ══════════════════════════════
+       LEFT PANEL
+  ══════════════════════════════ -->
+  <aside class="left">
+
+    <!-- Header -->
+    <div class="left-header">
+      <div class="eyebrow">// resume.builder</div>
+      <h1>RESUME BUILDER</h1>
+      <p>모듈을 쓰고 → 레이아웃에 배치하세요</p>
+    </div>
+
+    <!-- Tab bar -->
+    <nav class="tab-bar">
+      <button class="tab-btn active" data-tab="tab-info">👤 기본 정보</button>
+      <button class="tab-btn"        data-tab="tab-modules">📝 내 이야기</button>
+      <button class="tab-btn"        data-tab="tab-layout">🗂 레이아웃</button>
+      <button class="tab-btn"        data-tab="tab-style">🎨 스타일</button>
+    </nav>
+
+    <!-- ── TAB 1: 기본 정보 ── -->
+    <div class="tab-pane active" id="tab-info">
+      <div style="display:flex;flex-direction:column;gap:12px;width:100%;">
+        <div class="info-grid">
+          <div class="full">
+            <label class="field-label">이름</label>
+            <input class="field-input" data-field="name" placeholder="홍길동">
+          </div>
+          <div class="full">
+            <label class="field-label">직함 / 타이틀</label>
+            <input class="field-input" data-field="title" placeholder="iOS 개발자 · 교육자">
+          </div>
+          <div>
+            <label class="field-label">이메일</label>
+            <input class="field-input" data-field="email" placeholder="you@email.com" type="email">
+          </div>
+          <div>
+            <label class="field-label">전화</label>
+            <input class="field-input" data-field="phone" placeholder="010-0000-0000">
+          </div>
+          <div>
+            <label class="field-label">위치</label>
+            <input class="field-input" data-field="location" placeholder="서울, 대한민국">
+          </div>
+          <div>
+            <label class="field-label">웹사이트</label>
+            <input class="field-input" data-field="website" placeholder="yoursite.com">
+          </div>
+        </div>
+
+        <div style="margin-top:8px;padding-top:14px;border-top:1px solid var(--border);">
+          <div class="field-label" style="margin-bottom:8px;">빠른 시작</div>
+          <div style="display:flex;flex-direction:column;gap:5px;font-size:10.5px;color:var(--muted);line-height:1.8;background:var(--surface);border-radius:var(--radius);padding:12px;">
+            <div>①&nbsp; <strong style="color:var(--text);">내 이야기</strong> 탭에서 모듈을 추가하세요</div>
+            <div>②&nbsp; <strong style="color:var(--text);">레이아웃</strong> 탭에서 배치를 조정하세요</div>
+            <div>③&nbsp; <strong style="color:var(--text);">스타일</strong> 탭에서 색상을 골라보세요</div>
+            <div>④&nbsp; PDF 또는 MD로 내보내세요</div>
+          </div>
+        </div>
+
+        <button onclick="clearProject()"
+          style="margin-top:auto;padding:7px;background:none;border:1px solid var(--border);border-radius:6px;font-size:10px;color:var(--muted);cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
+          🗑 전체 초기화
+        </button>
+      </div>
+    </div>
+
+    <!-- ── TAB 2: 내 이야기 (모듈 편집) ── -->
+    <div class="tab-pane" id="tab-modules" style="gap:8px;">
+
+      <div class="module-list" id="module-list"></div>
+
+      <!-- Add module -->
+      <div class="add-module-bar">
+        <button class="add-module-toggle" onclick="togglePicker()">+ 모듈 추가</button>
+        <div class="module-type-picker" id="module-type-picker">
+          <button class="type-pick-btn" onclick="addModule('summary')">💬 요약 · 소개</button>
+          <button class="type-pick-btn" onclick="addModule('experience')">💼 경력</button>
+          <button class="type-pick-btn" onclick="addModule('project')">🛠️ 프로젝트</button>
+          <button class="type-pick-btn" onclick="addModule('skills')">⚡ 기술 스택</button>
+          <button class="type-pick-btn" onclick="addModule('education')">🎓 학력</button>
+          <button class="type-pick-btn" onclick="addModule('activity')">🏅 활동 · 수상</button>
+          <button class="type-pick-btn" onclick="addModule('custom')">✦ 커스텀 블록</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── TAB 3: 레이아웃 ── -->
+    <div class="tab-pane" id="tab-layout">
+      <div class="layout-tab" style="width:100%;">
+
+        <!-- Unplaced pool -->
+        <div>
+          <div class="layout-section-label">배치되지 않은 모듈</div>
+          <div class="unplaced-pool" id="unplaced-pool"></div>
+        </div>
+
+        <!-- Columns -->
+        <div>
+          <div class="layout-section-label">레이아웃 배치 — 드래그하거나 버튼으로 이동하세요</div>
+          <div class="layout-cols">
+            <div class="layout-col">
+              <div class="layout-col-head">
+                <span class="layout-col-name">메인 컬럼</span>
+                <span style="font-size:9px;color:var(--dim);">넓은 쪽</span>
+              </div>
+              <div class="layout-col-body" id="col-main"></div>
+            </div>
+            <div class="layout-col">
+              <div class="layout-col-head">
+                <span class="layout-col-name">사이드 컬럼</span>
+                <span style="font-size:9px;color:var(--dim);">좁은 쪽</span>
+              </div>
+              <div class="layout-col-body" id="col-side"></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size:10px;color:var(--dim);line-height:1.7;padding:8px;background:var(--surface);border-radius:var(--radius);">
+          💡 모듈을 드래그해서 컬럼 간 이동 · ↑↓로 순서 조정 · ✕로 배치 해제
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── TAB 4: 스타일 ── -->
+    <div class="tab-pane" id="tab-style">
+      <div style="width:100%;">
+
+        <div class="style-section">
+          <div class="field-label" style="margin-bottom:8px;">헤더 색상</div>
+          <div class="preset-grid" id="bg-presets"></div>
+        </div>
+
+        <div class="style-section">
+          <div class="field-label" style="margin-bottom:8px;">컬럼 비율</div>
+          <div class="ratio-btns" id="ratio-btns"></div>
+        </div>
+
+        <div style="margin-top:4px;font-size:10px;color:var(--dim);line-height:1.7;padding:10px;background:var(--surface);border-radius:var(--radius);">
+          💡 헤더 색상을 고르면 강조 색상(링크, 직함 등)도 함께 바뀝니다.
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Export bar -->
+    <div class="export-bar">
+      <button class="btn btn-primary"   onclick="exportPDF()">📄 PDF 출력</button>
+      <button class="btn btn-secondary" onclick="exportMD()"># MD 저장</button>
+    </div>
+
+  </aside>
+
+  <!-- ══════════════════════════════
+       RIGHT PANEL — PREVIEW
+  ══════════════════════════════ -->
+  <main class="right">
+    <div class="preview-bar">
+      <div class="preview-bar-left">
+        <span class="preview-label">LIVE PREVIEW</span>
+        <span class="preview-hint">내용이 바뀔 때마다 즉시 업데이트됩니다</span>
+      </div>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--dim);">A4 · 760px</span>
+    </div>
+    <div class="preview-scroll">
+      <div class="resume-canvas" id="resume-canvas"></div>
+    </div>
+  </main>
+
+</div>
+
+<!-- Scripts -->
+<script src="js/data.js"></script>
+<script src="js/render.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
