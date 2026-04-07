@@ -2,7 +2,7 @@
 
 모듈로 이야기를 쓰고, 레이아웃에 자유롭게 배치하는 이력서 빌더입니다.
 
-🔗 **Live**: `https://<your-username>.github.io/resume-blank/`
+🔗 **Live**: https://m1zz.github.io/resume-blank/
 
 ---
 
