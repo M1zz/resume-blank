@@ -429,9 +429,59 @@ function renderAll() {
 }
 
 /* ═══════════════════════════════════════════
-   SAVE
+   SAVE  (localStorage + 인디케이터)
 ═══════════════════════════════════════════ */
-function save() { saveProject(project); }
+let _saveTimer = null;
+function save() {
+  saveProject(project);
+  const el = document.getElementById('save-indicator');
+  if (!el) return;
+  el.textContent = '● 저장됨';
+  el.classList.remove('saving');
+  el.title = '마지막 저장: ' + new Date().toLocaleTimeString('ko-KR');
+}
+
+/* ═══════════════════════════════════════════
+   JSON 내보내기 / 불러오기
+═══════════════════════════════════════════ */
+function exportJSON() {
+  const name = (project.info.name || 'resume').replace(/\s+/g, '_');
+  const blob = new Blob([JSON.stringify(project, null, 2)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = `${name}_resume.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importJSON(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      // 기본 유효성 검사
+      if (!parsed.info || !Array.isArray(parsed.modules) || !parsed.layout) {
+        alert('올바른 이력서 JSON 파일이 아닙니다.');
+        return;
+      }
+      if (!confirm(`"${parsed.info.name || '이름 없음'}" 이력서를 불러오면 현재 작업이 덮어씌워집니다. 계속할까요?`)) return;
+      project = parsed;
+      save();
+      document.querySelectorAll('[data-field]').forEach(el => {
+        el.value = project.info[el.dataset.field] || '';
+      });
+      renderAll();
+    } catch {
+      alert('JSON 파일을 읽는 중 오류가 발생했습니다.');
+    }
+  };
+  reader.readAsText(file);
+  // 같은 파일 재선택 가능하도록 초기화
+  input.value = '';
+}
 
 /* ═══════════════════════════════════════════
    START

@@ -159,6 +159,22 @@
       </div>
     </div>
 
+    <!-- Storage notice -->
+    <div class="storage-notice">
+      <div class="storage-notice-row">
+        <span class="storage-notice-icon">⚠️</span>
+        <span>브라우저 데이터는 언제든 삭제될 수 있습니다. <strong>JSON으로 정기적으로 백업</strong>하세요.</span>
+      </div>
+      <div class="storage-save-row">
+        <span class="save-indicator" id="save-indicator">●&nbsp;저장됨</span>
+        <div style="display:flex;gap:5px;">
+          <button class="btn-icon-text" onclick="exportJSON()" title="JSON 파일로 내보내기">↓ JSON 저장</button>
+          <button class="btn-icon-text btn-import" onclick="document.getElementById('json-file-input').click()" title="JSON 파일 불러오기">↑ JSON 불러오기</button>
+        </div>
+      </div>
+      <input type="file" id="json-file-input" accept=".json" style="display:none" onchange="importJSON(this)">
+    </div>
+
     <!-- Export bar -->
     <div class="export-bar">
       <button class="btn btn-primary"   onclick="exportPDF()">📄 PDF 출력</button>
