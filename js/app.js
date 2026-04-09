@@ -394,7 +394,10 @@ function exportPDF() {
     </style>
   </head><body>${canvas.innerHTML}</body></html>`);
   w.document.close();
-  setTimeout(() => { w.print(); w.close(); }, 600);
+  setTimeout(() => {
+    w.onafterprint = () => w.close();
+    w.print();
+  }, 600);
 }
 
 function exportMD() {
